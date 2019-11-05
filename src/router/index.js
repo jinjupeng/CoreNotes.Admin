@@ -15,6 +15,11 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
+                    path: '/student',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Student/Student.vue'),
+                    meta: { title: '学生管理' }
+                },
+                {
                     path: '/dashboard',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
                     meta: { title: '系统首页' }
