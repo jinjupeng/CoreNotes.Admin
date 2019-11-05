@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { fetchData } from '../../../api/student';
+import { queryStudent } from '../../../api/student';
 export default {
     name: 'basetable',
     data() {
@@ -129,7 +129,7 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData().then(res => {
+            queryStudent().then(res => {
                 console.log(res);
                 this.tableData = res.list;
                 this.pageTotal = res.pageTotal || 50;

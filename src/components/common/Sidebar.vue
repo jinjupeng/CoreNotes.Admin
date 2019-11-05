@@ -63,7 +63,7 @@ export default {
                 },
                 {
                     icon: 'el-icon-rank',
-                    index: '6',
+                    index: '1',
                     title: '学生管理',
                     subs: [
                         {
