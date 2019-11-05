@@ -62,6 +62,17 @@ export default {
                     title: '系统首页'
                 },
                 {
+                    icon: 'el-icon-rank',
+                    index: '6',
+                    title: '学生管理',
+                    subs: [
+                        {
+                            index: 'student',
+                            title: '学生管理'
+                        }
+                    ]
+                },
+                {
                     icon: 'el-icon-lx-cascades',
                     index: 'table',
                     title: '基础表格'

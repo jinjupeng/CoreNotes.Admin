@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { fetchData } from '@/api/student';
+import { fetchData } from '../../../api/student';
 export default {
     name: 'basetable',
     data() {
