@@ -66,11 +66,32 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
+                <el-form-item
+                    label="学生姓名"
+                    prop="name"
+                    :rules="[
+                { required: true, message: '必填项', trigger: 'blur' }
+                ]"
+                >
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item
+                    label="年龄"
+                    prop="age"
+                    :rules="[
+                { required: true, message: '必填项', trigger: 'blur' }
+                ]"
+                >
+                    <el-input v-model="form.age"></el-input>
+                </el-form-item>
+                <el-form-item
+                    label="成绩"
+                    prop="grade"
+                    :rules="[
+                { required: true, message: '必填项', trigger: 'blur' }
+                ]"
+                >
+                    <el-input v-model="form.grade"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -82,7 +103,7 @@
 </template>
 
 <script>
-import { queryStudent, queryList } from '../../../api/student';
+import { queryList, edit } from '../../../api/student';
 export default {
     name: 'basetable',
     data() {
@@ -96,17 +117,21 @@ export default {
             delList: [],
             editVisible: false,
             pageTotal: 0,
-            form: {},
+            form: {
+                name: '',
+                age: '',
+                grade: ''
+            },
             idx: -1,
             id: -1
         };
     },
     created() {
-        this.getData();
+        this.fetchData();
     },
     methods: {
         // 获取 easy-mock 的模拟数据
-        getData() {
+        fetchData() {
             queryList(this.query).then(res => {
                 console.log(res);
                 this.tableData = res.response.data;
@@ -153,13 +178,24 @@ export default {
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    edit(this.form).then(response => {
+                        if (response.success) {
+                            this.$message({
+                                message: '保存成功！',
+                                type: 'success'
+                            });
+                            this.fetchData();
+                        }
+                    });
+                }
+            });
         },
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
-            this.getData();
+            this.fetchData();
         }
     }
 };

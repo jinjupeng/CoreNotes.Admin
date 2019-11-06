@@ -15,3 +15,11 @@ export function queryList(param) {
     params: param
   })
 }
+
+export function edit(param) {
+  return http({
+    url: '/student/edit',
+    method: 'post',
+    params: param
+  })
+}
