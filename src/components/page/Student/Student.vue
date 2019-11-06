@@ -15,6 +15,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
+                <el-button type="primary" @click="handleAdd">新增</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -96,14 +97,14 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="save">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-import { queryList, edit } from '../../../api/student';
+import { queryList, CreateOrUpdate } from '../../../api/student';
 export default {
     name: 'basetable',
     data() {
@@ -175,18 +176,30 @@ export default {
             this.form = row;
             this.editVisible = true;
         },
+        handleAdd() {
+            this.form.name = '';
+            this.form.age = '';
+            this.grade = '';
+            this.editVisible = true;
+        },
         // 保存编辑
-        saveEdit() {
+        save() {
             this.editVisible = false;
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    edit(this.form).then(response => {
+                    CreateOrUpdate(this.form).then(response => {
                         if (response.success) {
                             this.$message({
-                                message: '保存成功！',
+                                message: '提交成功！',
                                 type: 'success'
                             });
                             this.fetchData();
+                        }
+                        else{
+                            this.$message({
+                                message: response.msg,
+                                type: 'error'
+                            });
                         }
                     });
                 }
@@ -194,8 +207,6 @@ export default {
         },
         // 分页导航
         handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
-            this.fetchData();
         }
     }
 };

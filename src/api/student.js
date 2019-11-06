@@ -16,9 +16,9 @@ export function queryList(param) {
   })
 }
 
-export function edit(param) {
+export function CreateOrUpdate(param) {
   return http({
-    url: '/student/edit',
+    url: '/student/CreateOrUpdate',
     method: 'post',
     params: param
   })
