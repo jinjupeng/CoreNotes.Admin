@@ -3,7 +3,10 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
+                    学生管理
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>
+                    学生管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -52,14 +55,16 @@
                     </template>
                 </el-table-column>
             </el-table>
+
             <div class="pagination">
                 <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
+                    layout="sizes, total, prev, pager, next"
+                    :page-sizes="[8, 20, 30, 100]"
+                    :page-size.sync="query.pageSize"
+                    :current-page.sync="query.pageIndex"
+                    @current-change="(val) => { fetchData() }"
+                    @size-change="(val) => { fetchData() }"
                     :total="pageTotal"
-                    @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
@@ -113,8 +118,9 @@ export default {
             multipleSelection: [],
             query: {
                 pageIndex: 1,
-                pageSize: 10
+                pageSize: 7
             },
+            queryParam: { pageSize: 7 },
             delList: [],
             editVisible: false,
             pageTotal: 0,
@@ -122,9 +128,7 @@ export default {
                 name: '',
                 age: '',
                 grade: ''
-            },
-            idx: -1,
-            id: -1
+            }
         };
     },
     created() {
@@ -194,8 +198,7 @@ export default {
                                 type: 'success'
                             });
                             this.fetchData();
-                        }
-                        else{
+                        } else {
                             this.$message({
                                 message: response.msg,
                                 type: 'error'
@@ -206,8 +209,7 @@ export default {
             });
         },
         // 分页导航
-        handlePageChange(val) {
-        }
+        handlePageChange(val) {}
     }
 };
 </script>
