@@ -1,4 +1,4 @@
-import http from '../utils/request';
+import http from '../../utils/request';
 
 export function queryStudent(param) {
     return http({
@@ -23,3 +23,5 @@ export function CreateOrUpdate(param) {
     params: param
   })
 }
+
+// 删除/多条删除

@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { queryList, CreateOrUpdate } from '../../../api/student';
+import { queryList, CreateOrUpdate } from '../../../api/SystemManage/student';
 export default {
     name: 'basetable',
     data() {
