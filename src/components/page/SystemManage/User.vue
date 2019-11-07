@@ -40,7 +40,11 @@
                 <el-table-column prop="realName" label="昵称"></el-table-column>
                 <el-table-column prop="loginName" label="登录名"></el-table-column>
                 <el-table-column prop="roleName" label="角色"></el-table-column>
-                <el-table-column prop="sex" label="性别" align="center"></el-table-column>
+                <el-table-column prop="sex" label="性别" align="center">
+                    <template slot-scope="scope">
+                        <el-tag :type="success">{{ scope.row.sex | enumDesc('SexValues') }}</el-tag>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="birthDay" label="生日"></el-table-column>
                 <el-table-column prop="status" label="状态" align="center">
                     <template slot-scope="scope">
@@ -178,9 +182,12 @@
 import { getUserList, removeUser, batchRemoveUser, editUser, addUser } from '../../../api/SystemManage/user';
 import { getRoleList } from '../../../api/SystemManage/role';
 import util from '../../../utils/date';
+import { utilsMixin } from '../../../mixin/utils';
 
 export default {
     name: 'User',
+    mixins: [utilsMixin],
+    components: {},
     data() {
         return {
             tableData: [],
