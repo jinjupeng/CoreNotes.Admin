@@ -64,11 +64,19 @@ export default {
                 {
                     icon: 'el-icon-rank',
                     index: '1',
-                    title: '学生管理',
+                    title: '系统管理',
                     subs: [
                         {
                             index: 'student',
                             title: '学生管理'
+                        },
+                        {
+                            index: 'user',
+                            title: '用户管理'
+                        },
+                        {
+                            index: 'role',
+                            title: '角色管理'
                         }
                     ]
                 },

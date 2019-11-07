@@ -16,8 +16,13 @@ export default new Router({
             children: [
                 {
                     path: '/student',
-                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/SystemManage/Student.vue'),
+                    component: () => import('../components/page/SystemManage/Student.vue'),
                     meta: { title: '学生管理' }
+                },
+                {
+                    path: '/user',
+                    component: () => import('../components/page/SystemManage/User.vue'),
+                    meta: { title: '用户管理' }
                 },
                 {
                     path: '/dashboard',

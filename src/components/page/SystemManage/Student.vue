@@ -145,8 +145,8 @@ export default {
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
-            this.getData();
+            this.queryParam = Object.assign(this.queryParam, this.query)
+            this.fetchData();
         },
         // 删除操作
         handleDelete(index, row) {
@@ -207,9 +207,7 @@ export default {
                     });
                 }
             });
-        },
-        // 分页导航
-        handlePageChange(val) {}
+        }
     }
 };
 </script>
