@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '用户管理' }
                 },
                 {
+                    path: '/role',
+                    component: () => import('../components/page/SystemManage/Role.vue'),
+                    meta: { title: '角色管理' }
+                },
+                {
                     path: '/dashboard',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
                     meta: { title: '系统首页' }

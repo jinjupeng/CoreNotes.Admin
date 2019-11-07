@@ -26,7 +26,17 @@ const SexValues = [{
     desc: '男'
   }
 ]
+const RoleStatus = [{
+    name: '激活',
+    value: true
+  },
+  {
+    name: '禁用',
+    value: false
+  }
+]
 export {
   statusValues,
-  SexValues
+  SexValues,
+  RoleStatus
 }
