@@ -10,8 +10,9 @@
             <el-row>
                 <el-form :inline="true" :model="queryParam" class="query-form-inline">
                     <el-form-item>
-                        <el-input v-model="queryParam.name" placeholder="昵称/登录名"></el-input>
+                        <el-input v-model="queryParam.name" clearable placeholder="请输入登录名"></el-input>
                     </el-form-item>
+                    <!-- 用户名的启用/禁用状态查询 -->
                     <el-form-item>
                         <el-button type="primary" @click="handleSearch">查询</el-button>
                     </el-form-item>
@@ -42,16 +43,18 @@
                 <el-table-column prop="roleName" label="角色"></el-table-column>
                 <el-table-column prop="sex" label="性别" align="center">
                     <template slot-scope="scope">
-                        <el-tag :type="success">{{ scope.row.sex | enumDesc('SexValues') }}</el-tag>
+                        <el-tag>{{ scope.row.sex | enumDesc('SexValues') }}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="birthDay" label="生日"></el-table-column>
+                <el-table-column prop="birthDay" label="生日">
+                    <template slot-scope="scope">{{ scope.row.birthDay }}</template>
+                </el-table-column>
                 <el-table-column prop="status" label="状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.status == 0  ? 'success' : 'danger'"
+                            :type="scope.row.status == 1  ? 'success' : 'danger'"
                             disable-transitions
-                        >{{scope.row.status == 0 ? "正常":"禁用"}}</el-tag>
+                        >{{scope.row.status == 1 ? "正常":"禁用"}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
@@ -61,6 +64,7 @@
                             icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)"
                         >编辑</el-button>
+                        <!-- 用户名的启用/禁用按钮 -->
                         <el-button
                             type="text"
                             icon="el-icon-delete"
@@ -98,7 +102,7 @@
                 <el-form-item label="登录名" prop="loginName">
                     <el-input v-model="editForm.loginName" auto-complete="off"></el-input>
                 </el-form-item>
-                <!-- 密码单独修改，不再这里修改 -->
+                <!-- 密码由登录用户单独修改，不在这里修改 -->
                 <!--<el-form-item label="密码" prop="pwd"">-->
                 <!--<el-input v-model="editForm.pwd" show-password  auto-complete="off"></el-input>-->
                 <!--</el-form-item>-->
@@ -114,7 +118,6 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-
                 <el-form-item label="性别">
                     <el-radio-group v-model="editForm.sex">
                         <el-radio class="radio" :label="1">男</el-radio>
@@ -197,7 +200,7 @@ export default {
                 pageIndex: 1,
                 pageSize: 7
             },
-            queryParam: { pageSize: 7, name: '' },
+            queryParam: { pageSize: 7, name: '', status: '' },
             pageTotal: 0,
             delList: [],
             listLoading: false,
@@ -259,7 +262,7 @@ export default {
         },
         // 触发搜索按钮
         handleSearch() {
-            this.queryParam = Object.assign(this.queryParam, this.query);
+            this.query = Object.assign(this.query, this.queryParam);
             this.fetchData();
         },
         //删除
@@ -270,7 +273,7 @@ export default {
                 .then(() => {
                     this.listLoading = true;
                     //NProgress.start();
-                    let para = { id: row.uID };
+                    let para = { id: row.id };
                     removeUser(para).then(res => {
                         if (util.isEmt.format(res)) {
                             this.listLoading = false;

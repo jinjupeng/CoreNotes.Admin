@@ -112,6 +112,7 @@ const utilsMixin = {
     }
   },
   methods: {
+    // 金额格式化
     getFormatCurrency: function(num) {
       if (num === undefined) {
         return num
