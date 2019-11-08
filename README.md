@@ -2,7 +2,7 @@
 
 基于 Vue + Element UI 的后台管理系统解决方案。
 
-目前本项目作为前后端分离之CoreNotes.AutoFac后端的前端实现。
+目前本项目作为前后端分离之[CoreNotes.AutoFac](https://github.com/jinjupeng/CoreNotes.AutoFac)后端的前端实现。
 
 
 ## 前言

@@ -29,17 +29,17 @@
                 header-cell-class-name="table-header"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="Name" label="角色名"></el-table-column>
-                <el-table-column prop="Description" label="说明"></el-table-column>
-                <el-table-column prop="CreateTime" label="创建时间">
-                    <template slot-scope="scope">{{ scope.row.CreateTime }}</template>
+                <el-table-column prop="roleName" label="角色名"></el-table-column>
+                <el-table-column prop="description" label="说明"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间">
+                    <template slot-scope="scope">{{ scope.row.createTime }}</template>
                 </el-table-column>
-                <el-table-column prop="Enabled" label="状态" align="center">
+                <el-table-column prop="enabled" label="状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.Enabled ? 'success' : 'danger'"
+                            :type="scope.row.enabled ? 'success' : 'danger'"
                             disable-transitions
-                        >{{scope.row.Enabled ? "正常":"禁用"}}</el-tag>
+                        >{{scope.row.enabled ? "正常":"禁用"}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
@@ -81,14 +81,14 @@
             :close-on-click-modal="false"
         >
             <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-                <el-form-item label="角色名" prop="Name">
-                    <el-input v-model="editForm.Name" auto-complete="off"></el-input>
+                <el-form-item label="角色名" prop="roleName">
+                    <el-input v-model="editForm.roleName" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="说明" prop="Description">
-                    <el-input v-model="editForm.Description" auto-complete="off"></el-input>
+                <el-form-item label="说明" prop="description">
+                    <el-input v-model="editForm.description" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" prop="Enabled">
-                    <el-select v-model="editForm.Enabled" placeholder="请选择角色状态">
+                <el-form-item label="状态" prop="enabled">
+                    <el-select v-model="editForm.enabled" placeholder="请选择角色状态">
                         <el-option
                             v-for="item in statusList"
                             :key="item.value"
@@ -112,14 +112,14 @@
             :close-on-click-modal="false"
         >
             <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-                <el-form-item label="角色名" prop="Name">
-                    <el-input v-model="addForm.Name" auto-complete="off"></el-input>
+                <el-form-item label="角色名" prop="roleName">
+                    <el-input v-model="addForm.roleName" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="说明" prop="Description">
-                    <el-input v-model="addForm.Description" auto-complete="off"></el-input>
+                <el-form-item label="说明" prop="description">
+                    <el-input v-model="addForm.description" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" prop="Enabled">
-                    <el-select v-model="addForm.Enabled" placeholder="请选择角色状态">
+                <el-form-item label="状态" prop="enabled">
+                    <el-select v-model="addForm.enabled" placeholder="请选择角色状态">
                         <el-option label="激活" value="true"></el-option>
                         <el-option label="禁用" value="false"></el-option>
                     </el-select>
@@ -156,26 +156,26 @@ export default {
             editFormVisible: false, //编辑界面是否显示
             editLoading: false,
             editFormRules: {
-                Name: [{ required: true, message: '请输入角色名', trigger: 'blur' }]
+                RoleName: [{ required: true, message: '请输入角色名', trigger: 'blur' }]
             },
             //编辑界面数据
             editForm: {
                 Id: 0,
                 CreateBy: '',
-                Name: '',
+                RoleName: '',
                 Enabled: false
             },
 
             addFormVisible: false, //新增界面是否显示
             addLoading: false,
             addFormRules: {
-                Name: [{ required: true, message: '请输入角色名', trigger: 'blur' }]
+                RoleName: [{ required: true, message: '请输入角色名', trigger: 'blur' }]
             },
             //新增界面数据
             addForm: {
                 CreateBy: '',
                 CreateId: '',
-                Name: '',
+                RoleName: '',
                 Enabled: ''
             }
         };
@@ -235,7 +235,7 @@ export default {
         handleEdit(index, row) {
             this.editFormVisible = true;
             this.editForm = Object.assign({}, row);
-            this.statusList = getEnumType('RoleStatus')
+            this.statusList = this.getEnumType('RoleStatus')
         },
         //显示新增界面
         handleAdd() {
@@ -245,7 +245,7 @@ export default {
                 Name: '',
                 Enabled: ''
             };
-            this.statusList = getEnumType('RoleStatus')
+            this.statusList = this.getEnumType('RoleStatus')
         },
         //编辑
         editSubmit() {
@@ -255,12 +255,6 @@ export default {
                         this.editLoading = true;
                         //NProgress.start();
                         let para = Object.assign({}, this.editForm);
-
-                        para.birth =
-                            !para.birth || para.birth == ''
-                                ? util.formatDate.format(new Date(), 'yyyy-MM-dd')
-                                : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-
                         editRole(para).then(res => {
                             if (util.isEmt.format(res)) {
                                 this.editLoading = false;
@@ -295,10 +289,6 @@ export default {
                         this.addLoading = true;
                         //NProgress.start();
                         let para = Object.assign({}, this.addForm);
-                        para.birth =
-                            !para.birth || para.birth == ''
-                                ? util.formatDate.format(new Date(), 'yyyy-MM-dd')
-                                : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
                         addRole(para).then(res => {
                             if (util.isEmt.format(res)) {
                                 this.addLoading = false;

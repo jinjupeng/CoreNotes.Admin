@@ -3,7 +3,7 @@ import http from '../../utils/request';
 // 角色分页列表
 export function getRoleList(params) {
     return http({
-        url: '/role/get',
+        url: '/role/getlist',
         method: 'get',
         params: params
       })
