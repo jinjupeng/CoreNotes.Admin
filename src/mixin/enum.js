@@ -35,8 +35,18 @@ const RoleStatus = [{
     value: false
   }
 ]
+const MenuStatus = [{
+  name: '激活',
+  value: true
+},
+{
+  name: '禁用',
+  value: false
+}
+]
 export {
   statusValues,
   SexValues,
-  RoleStatus
+  RoleStatus,
+  MenuStatus
 }
