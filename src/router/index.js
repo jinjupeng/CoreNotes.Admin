@@ -35,8 +35,8 @@ export default new Router({
                         title: '角色管理'
                     }
                 }, {
-                    path: '/permission',
-                    component: () => import('../components/page/SystemManage/Permission.vue'),
+                    path: '/menu',
+                    component: () => import('../components/page/SystemManage/Menu.vue'),
                     meta: {
                         title: '菜单管理'
                     }

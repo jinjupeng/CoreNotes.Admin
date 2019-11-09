@@ -79,7 +79,7 @@ export default {
                             title: '角色管理'
                         },
                         {
-                            index: 'permission',
+                            index: 'menu',
                             title: '菜单管理'
                         }
                     ]

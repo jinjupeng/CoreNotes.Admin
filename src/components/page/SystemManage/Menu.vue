@@ -28,45 +28,45 @@
                 ref="multipleTable"
                 header-cell-class-name="table-header"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column type="selection" width="60" align="center"></el-table-column>
                 <el-table-column label="菜单/按钮" width sortable>
                     <template slot-scope="scope">
                         <i class="fa" :class="scope.row.Icon"></i>
                         {{scope.row.Name}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="PnameArr" label="父节点" width sortable></el-table-column>
-                <el-table-column prop="Path" label="路由地址" width sortable></el-table-column>
-                <el-table-column prop="MName" label="API接口" width sortable></el-table-column>
-                <el-table-column prop="CreateTime" label="创建时间" width="150" sortable>
-                    <template slot-scope="scope">{{scope.row.CreateTime | unixTime}}</template>
+                <el-table-column prop="PnameArr" label="父节点" width sortable align="center"></el-table-column>
+                <el-table-column prop="Path" label="路由地址" width sortable align="center"></el-table-column>
+                <el-table-column prop="moduleName" label="API接口" width sortable align="center"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" width="140" sortable align="center">
+                    <template slot-scope="scope">{{scope.row.createTime | unixTime}}</template>
                 </el-table-column>
-                <el-table-column prop="Enabled" label="状态" width="100" sortable>
+                <el-table-column prop="enabled" label="状态" width="100" sortable align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.Enabled  ? 'success' : 'danger'"
+                            :type="scope.row.enabled  ? 'success' : 'danger'"
                             disable-transitions
-                        >{{scope.row.Enabled ? "正常":"禁用"}}</el-tag>
+                        >{{scope.row.enabled ? "正常":"禁用"}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="OrderSort" label="Sort" width sortable></el-table-column>
-                <el-table-column prop="IsButton" label="是否按钮" width="100" sortable>
+                <el-table-column prop="orderSort" label="排序" width="75" sortable></el-table-column>
+                <el-table-column prop="isButton" label="是否按钮" width="120" sortable align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="!scope.row.IsButton  ? 'success' : 'danger'"
+                            :type="!scope.row.isButton  ? 'success' : 'danger'"
                             disable-transitions
-                        >{{!scope.row.IsButton ? "否":"是"}}</el-tag>
+                        >{{!scope.row.isButton ? "否":"是"}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="IsHide" label="是否隐藏" width="100" sortable>
+                <el-table-column prop="isHide" label="是否隐藏" width="120" sortable align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="!scope.row.IsHide  ? 'success' : 'danger'"
+                            :type="!scope.row.isHide  ? 'success' : 'danger'"
                             disable-transitions
                         >{{!scope.row.IsHide ? "否":"是"}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150">
+                <el-table-column label="操作" width="150" align="center">
                     <template scope="scope">
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button
@@ -99,27 +99,27 @@
             :close-on-click-modal="false"
         >
             <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-                <el-form-item label="菜单名称" prop="Name">
-                    <el-input v-model="editForm.Name" auto-complete="off"></el-input>
+                <el-form-item label="菜单名称" prop="name">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="路由地址" prop="Code">
+                <el-form-item label="路由地址" prop="path">
                     <el-tooltip
                         class="item"
                         effect="dark"
                         content="如果是导航条且无路由，请填‘-’字符，如果是按钮，请输入空格即可"
                         placement="top-start"
                     >
-                        <el-input v-model="editForm.Code" auto-complete="off"></el-input>
+                        <el-input v-model="editForm.path" auto-complete="off"></el-input>
                     </el-tooltip>
                 </el-form-item>
-                <el-form-item label="描述" prop="Description">
-                    <el-input v-model="editForm.Description" auto-complete="off"></el-input>
+                <el-form-item label="描述" prop="description">
+                    <el-input v-model="editForm.description" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="Icon" prop="Icon">
-                    <el-input v-model="editForm.Icon" auto-complete="off"></el-input>
+                <el-form-item label="Icon" prop="icon">
+                    <el-input v-model="editForm.icon" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" prop="Enabled">
-                    <el-select v-model="editForm.Enabled" placeholder="请选择状态">
+                <el-form-item label="状态" prop="enabled">
+                    <el-select v-model="editForm.enabled" placeholder="请选择状态">
                         <el-option
                             v-for="item in statusList"
                             :key="item.value"
@@ -129,14 +129,14 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="排序" prop="OrderSort">
-                    <el-input type="number" v-model="editForm.OrderSort" auto-complete="off"></el-input>
+                <el-form-item label="排序" prop="orderSort">
+                    <el-input type="number" v-model="editForm.orderSort" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item prop="IsButton" label="是否按钮" width sortable>
-                    <el-switch v-model="editForm.IsButton"></el-switch>
+                    <el-switch v-model="editForm.isButton"></el-switch>
                 </el-form-item>
                 <el-form-item prop="IsHide" label="隐藏菜单" width sortable>
-                    <el-switch v-model="editForm.IsHide"></el-switch>
+                    <el-switch v-model="editForm.isHide"></el-switch>
                 </el-form-item>
                 <el-form-item prop="PidArr" label="父级菜单" width sortable>
                     <el-cascader
@@ -149,7 +149,7 @@
                     ></el-cascader>
                 </el-form-item>
                 <el-form-item prop="Mid" label="API接口" width sortable>
-                    <el-select style="width: 100%;" v-model="editForm.Mid" placeholder="请选择API">
+                    <el-select style="width: 100%;" v-model="editForm.moduleId" placeholder="请选择API">
                         <el-option :key="0" :value="0" :label="'无需api'"></el-option>
                         <el-option
                             v-for="item in modules"
