@@ -8,6 +8,13 @@ export function getRoleList(params) {
         params: params
       })
 };
+// 不分页查询
+export function getRoleAll() {
+  return http({
+    url: '/role/getall',
+    method: 'get'
+  })
+}
 
 // 单条删除
 export function removeRole(params) {

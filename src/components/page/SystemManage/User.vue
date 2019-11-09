@@ -112,9 +112,9 @@
                         <el-option :key="0" :label="'未选择角色'" :value="0"></el-option>
                         <el-option
                             v-for="item in roles"
-                            :key="item.Id"
-                            :label="item.Name"
-                            :value="item.Id"
+                            :key="item.id"
+                            :label="item.roleName"
+                            :value="item.id"
                         ></el-option>
                     </el-select>
                 </el-form-item>
@@ -183,6 +183,7 @@
 
 <script>
 import { getUserList, removeUser, batchRemoveUser, editUser, addUser } from '../../../api/SystemManage/user';
+import { getRoleAll } from '../../../api/SystemManage/role';
 import { getRoleList } from '../../../api/SystemManage/role';
 import util from '../../../utils/date';
 import { utilsMixin } from '../../../mixin/utils';
@@ -256,10 +257,6 @@ export default {
                 this.listLoading = false;
             });
         },
-        //性别显示转换
-        formatSex(row, column) {
-            return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
-        },
         // 触发搜索按钮
         handleSearch() {
             this.query = Object.assign(this.query, this.queryParam);
@@ -307,8 +304,8 @@ export default {
             this.editFormVisible = true;
             this.editForm = Object.assign({}, row);
 
-            getRoleList().then(res => {
-                this.roles = res.response.data;
+            getRoleAll().then(res => {
+                this.roles = res.response;
             });
         },
         //显示新增界面
@@ -332,12 +329,6 @@ export default {
                         this.editLoading = true;
                         //NProgress.start();
                         let para = Object.assign({}, this.editForm);
-
-                        para.birth =
-                            !para.birth || para.birth == ''
-                                ? util.formatDate.format(new Date(), 'yyyy-MM-dd')
-                                : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-
                         editUser(para).then(res => {
                             if (util.isEmt.format(res)) {
                                 this.editLoading = false;
@@ -372,10 +363,6 @@ export default {
                         this.addLoading = true;
                         //NProgress.start();
                         let para = Object.assign({}, this.addForm);
-                        para.birth =
-                            !para.birth || para.birth == ''
-                                ? util.formatDate.format(new Date(), 'yyyy-MM-dd')
-                                : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
                         addUser(para).then(res => {
                             if (util.isEmt.format(res)) {
                                 this.addLoading = false;
