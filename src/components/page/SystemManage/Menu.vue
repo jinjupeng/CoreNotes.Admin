@@ -24,20 +24,17 @@
             <el-table
                 :data="tableData"
                 border
-                class="table"
-                ref="multipleTable"
-                header-cell-class-name="table-header"
+                row-key="id"
+                :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
             >
-                <el-table-column type="selection" width="60" align="center"></el-table-column>
                 <el-table-column label="菜单/按钮" width sortable>
                     <template slot-scope="scope">
-                        <i class="fa" :class="scope.row.Icon"></i>
-                        {{scope.row.Name}}
+                        <i class="fa" :class="scope.row.icon"></i>
+                        {{scope.row.name}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="PnameArr" label="父节点" width sortable align="center"></el-table-column>
-                <el-table-column prop="Path" label="路由地址" width sortable align="center"></el-table-column>
-                <el-table-column prop="moduleName" label="API接口" width sortable align="center"></el-table-column>
+                <el-table-column prop="path" label="路由地址" width sortable align="center"></el-table-column>
+                <el-table-column prop="mName" label="API接口" width sortable align="center"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" width="140" sortable align="center">
                     <template slot-scope="scope">{{scope.row.createTime | unixTime}}</template>
                 </el-table-column>
@@ -77,18 +74,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-
-            <div class="pagination">
-                <el-pagination
-                    layout="sizes, total, prev, pager, next"
-                    :page-sizes="[8, 20, 30, 100]"
-                    :page-size.sync="query.pageSize"
-                    :current-page.sync="query.pageIndex"
-                    @current-change="(val) => { fetchData() }"
-                    @size-change="(val) => { fetchData() }"
-                    :total="pageTotal"
-                ></el-pagination>
-            </div>
         </div>
 
         <!--编辑界面-->
@@ -132,24 +117,35 @@
                 <el-form-item label="排序" prop="orderSort">
                     <el-input type="number" v-model="editForm.orderSort" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item prop="IsButton" label="是否按钮" width sortable>
+                <el-form-item prop="isButton" label="是否按钮" width sortable>
                     <el-switch v-model="editForm.isButton"></el-switch>
                 </el-form-item>
-                <el-form-item prop="IsHide" label="隐藏菜单" width sortable>
+                <el-form-item prop="isHide" label="隐藏菜单" width sortable>
                     <el-switch v-model="editForm.isHide"></el-switch>
                 </el-form-item>
-                <el-form-item prop="PidArr" label="父级菜单" width sortable>
-                    <el-cascader
+                <el-form-item prop="pid" label="父级菜单" width sortable>
+                    <treeselect
+                        v-model="editForm.pid"
+                        :multiple="false"
+                        :options="options"
+                        placeholder="请选择父级菜单"
+                    />
+                    <!--<el-cascader
                         placeholder="请选择，支持搜索功能"
                         style="width: 400px"
                         v-model="editForm.PidArr"
                         :options="options"
                         filterable
                         change-on-select
-                    ></el-cascader>
+                    ></el-cascader>-->
                 </el-form-item>
-                <el-form-item prop="Mid" label="API接口" width sortable>
-                    <el-select style="width: 100%;" v-model="editForm.moduleId" placeholder="请选择API">
+
+                <el-form-item prop="mid" label="API接口" width sortable>
+                    <el-select
+                        style="width: 100%;"
+                        v-model="editForm.mid"
+                        placeholder="请选择API"
+                    >
                         <el-option :key="0" :value="0" :label="'无需api'"></el-option>
                         <el-option
                             v-for="item in modules"
@@ -160,7 +156,7 @@
                             <span style="float: left">{{ item.LinkUrl }}</span>
                             <span
                                 style="float: right; color: #8492a6; font-size: 13px"
-                            >{{ item.Name }}</span>
+                            >{{ item.name }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -182,14 +178,14 @@
                 <el-form-item label="菜单名称" prop="Name">
                     <el-input v-model="addForm.Name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="路由地址" prop="Code">
+                <el-form-item label="路由地址" prop="Path">
                     <el-tooltip
                         class="item"
                         effect="dark"
                         content="如果是导航条且无路由，请填‘-’字符，如果是按钮，请输入空格即可"
                         placement="top-start"
                     >
-                        <el-input v-model="addForm.Code" auto-complete="off"></el-input>
+                        <el-input v-model="addForm.Path" auto-complete="off"></el-input>
                     </el-tooltip>
                 </el-form-item>
                 <el-form-item label="描述" prop="Description">
@@ -214,7 +210,14 @@
                 <el-form-item prop="IsHide" label="隐藏菜单" width sortable>
                     <el-switch v-model="addForm.IsHide"></el-switch>
                 </el-form-item>
-                <el-form-item prop="PidArr" label="父级菜单" width sortable>
+                <el-form-item prop="Pid" label="父级菜单" width sortable>
+                    <treeselect
+                        v-model="addForm.Pid"
+                        :multiple="false"
+                        :options="options"
+                        placeholder="请选择父级菜单"
+                    />
+                    <!--
                     <el-cascader
                         style="width: 400px"
                         v-model="addForm.PidArr"
@@ -222,6 +225,7 @@
                         filterable
                         change-on-select
                     ></el-cascader>
+                    -->
                 </el-form-item>
 
                 <el-form-item prop="Mid" label="API接口" width sortable>
@@ -251,64 +255,61 @@
 
 <script>
 import { getPermissionList, removePermission, editPermission, addPermission } from '../../../api/SystemManage/permission';
+import { getMenuTree, getMenuTreeList, deleteMenu } from '../../../api/SystemManage/menu';
 import util from '../../../utils/date';
 import { utilsMixin } from '../../../mixin/utils';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
 export default {
     name: 'Permission',
     mixins: [utilsMixin],
-    components: {},
+    components: { Treeselect },
     data() {
         return {
             tableData: [],
             statusList: [],
             users: [],
-            modules: [], //接口api列表
-            options: [],
-            query: {
-                pageIndex: 1,
-                pageSize: 7
-            },
-            queryParam: { pageSize: 7 },
-            pageTotal: 0,
+            modules: [], // 接口api列表
+            options: [], // 菜单树
+            queryParam: {},
             listLoading: false,
             editFormVisible: false, //编辑界面是否显示
             editLoading: false,
             editFormRules: {
-                Name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-                Code: [{ required: true, message: '请输入路由地址', trigger: 'blur' }]
+                name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+                path: [{ required: true, message: '请输入路由地址', trigger: 'blur' }]
             },
             //编辑界面数据
             editForm: {
-                Id: 0,
-                Mid: 0,
-                OrderSort: 0,
-                PidArr: [],
-                CreateBy: '',
-                Name: '',
-                Code: '',
-                Description: '',
-                Icon: '',
-                Enabled: true,
-                IsButton: false,
-                IsHide: false
+                id: 0,
+                mid: 0,
+                orderSort: 0,
+                createBy: '',
+                name: '',
+                path: '',
+                description: '',
+                icon: '',
+                enabled: true,
+                isButton: false,
+                isHide: false
             },
 
             addFormVisible: false, //新增界面是否显示
             addLoading: false,
             addFormRules: {
                 Name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-                Code: [{ required: true, message: '请输入路由地址', trigger: 'blur' }]
+                Path: [{ required: true, message: '请输入路由地址', trigger: 'blur' }]
             },
             //新增界面数据
             addForm: {
                 CreateBy: '',
                 CreateId: '',
-                PidArr: [],
                 Mid: 0,
+                Pid: '',
                 OrderSort: 0,
                 Name: '',
-                Code: '',
+                Path: '',
                 Description: '',
                 Icon: '',
                 Enabled: true,
@@ -323,16 +324,15 @@ export default {
     methods: {
         fetchData() {
             this.listLoading = true;
-            getPermissionList(this.query).then(res => {
+            getMenuTreeList().then(res => {
                 // console.log(res);
-                this.tableData = res.response.data;
-                this.pageTotal = res.response.dataCount;
+                this.tableData = res.response;
                 this.listLoading = false;
             });
         },
         // 触发搜索按钮
         handleSearch() {
-            this.query = Object.assign(this.query, this.queryParam);
+            // this.query = Object.assign(this.query, this.queryParam);
             this.fetchData();
         },
         //删除
@@ -344,7 +344,7 @@ export default {
                     this.listLoading = true;
                     //NProgress.start();
                     let para = { id: row.id };
-                    removePermission(para).then(res => {
+                    deleteMenu(para).then(res => {
                         if (util.isEmt.format(res)) {
                             this.listLoading = false;
                             return;
@@ -368,11 +368,21 @@ export default {
                 })
                 .catch(() => {});
         },
+        // 获取菜单树
+        getMenuTree() {
+            getMenuTree().then(res => {
+                if (res.success) {
+                    this.options = res.response;
+                }
+            });
+        },
         //显示编辑界面
         handleEdit(index, row) {
             this.editFormVisible = true;
             this.editForm = Object.assign({}, row);
             this.statusList = this.getEnumType('MenuStatus');
+            this.getMenuTree();
+            // console.log(this.options);
         },
         //显示新增界面
         handleAdd() {
@@ -380,9 +390,9 @@ export default {
             this.addForm = {
                 CreateBy: '',
                 CreateId: '',
-                PidArr: [],
                 Name: '',
-                Code: '',
+                Path: '',
+                Pid: '',
                 OrderSort: 0,
                 Description: '',
                 Enabled: true,
@@ -391,6 +401,7 @@ export default {
                 IsHide: false
             };
             this.statusList = this.getEnumType('MenuStatus');
+            this.getMenuTree();
         },
         //编辑
         editSubmit() {
