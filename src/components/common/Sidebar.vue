@@ -45,16 +45,58 @@
                     </el-menu-item>
                 </template>
             </template>
+
+            <!-- 
+            <template v-for="item in items">
+                <template v-if="item.children">
+                    <el-submenu :index="item.path" :key="item.path">
+                        <template slot="title">
+                            <i :class="item.icon"></i>
+                            <span slot="title">{{ item.label }}</span>
+                        </template>
+                        <template v-for="subItem in item.children">
+                            <el-submenu
+                                v-if="subItem.children"
+                                :index="subItem.path"
+                                :key="subItem.path"
+                            >
+                                <template slot="title">{{ subItem.label }}</template>
+                                <el-menu-item
+                                    v-for="(threeItem,i) in subItem.children"
+                                    :key="i"
+                                    :index="threeItem.path"
+                                >{{ threeItem.label }}</el-menu-item>
+                            </el-submenu>
+                            <el-menu-item
+                                v-else
+                                :index="subItem.path"
+                                :key="subItem.path"
+                            >{{ subItem.label }}</el-menu-item>
+                        </template>
+                    </el-submenu>
+                </template>
+                <template v-else>
+                    <el-menu-item :index="item.path" :key="item.path">
+                        <i :class="item.icon"></i>
+                        <span slot="title">{{ item.label }}</span>
+                    </el-menu-item>
+                </template>
+            </template>
+            -->
         </el-menu>
     </div>
 </template>
 
 <script>
 import bus from '../common/bus';
+import http from '../../utils/request';
+
 export default {
     data() {
         return {
             collapse: false,
+            // items: []
+
             items: [
                 {
                     icon: 'el-icon-lx-home',
@@ -85,6 +127,10 @@ export default {
                         {
                             index: 'module',
                             title: '接口管理'
+                        },
+                        {
+                            index: 'assign',
+                            title: '权限管理'
                         }
                     ]
                 },
@@ -186,6 +232,12 @@ export default {
         }
     },
     created() {
+        /*
+        http.get('/menu/getsidebarmenutree').then(res => {
+            this.items = res.response;
+            console.log(this.items)
+        });
+        */
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
         bus.$on('collapse', msg => {
             this.collapse = msg;

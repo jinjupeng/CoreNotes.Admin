@@ -46,6 +46,12 @@ export default new Router({
                     meta: {
                         title: '接口管理'
                     }
+                },{
+                    path: '/assign',
+                    component: () => import('../components/page/SystemManage/Assign.vue'),
+                    meta: {
+                        title: '权限管理'
+                    }
                 },
                 {
                     path: '/dashboard',

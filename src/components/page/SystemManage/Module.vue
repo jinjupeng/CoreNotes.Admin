@@ -29,13 +29,13 @@
                 header-cell-class-name="table-header"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="linkUrl" label="接口地址"></el-table-column>
-                <el-table-column prop="name" label="描述"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间">
+                <el-table-column prop="linkUrl" label="接口地址" align="center"></el-table-column>
+                <el-table-column prop="name" label="接口描述" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" align="center">
                     <template slot-scope="scope">{{ scope.row.createTime }}</template>
                 </el-table-column>
 
-                <el-table-column prop="createBy" label="创建者" width sortable></el-table-column>
+                <el-table-column prop="createBy" label="创建者" width sortable align="center"></el-table-column>
                 <el-table-column prop="enabled" label="状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -170,14 +170,15 @@ export default {
 
             addFormVisible: false, //新增界面是否显示
             addLoading: false,
-            addFormRules: { 
-                linkUrl: [{ required: true, message: '请输入接口地址', trigger: 'blur' }] },
+            addFormRules: {
+                linkUrl: [{ required: true, message: '请输入接口地址', trigger: 'blur' }]
+            },
             //新增界面数据
             addForm: {
                 createBy: '',
                 createId: '',
                 name: '', // 接口描述
-                enabled: ''
+                enabled: true
             }
         };
     },
@@ -242,9 +243,10 @@ export default {
         handleAdd() {
             this.addFormVisible = true;
             this.addForm = {
-                CreateBy: '',
-                Name: '',
-                Enabled: ''
+                linkUrl: '',
+                createBy: '',
+                name: '',
+                enabled: ''
             };
             this.statusList = this.getEnumType('RoleStatus');
         },

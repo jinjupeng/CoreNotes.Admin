@@ -148,7 +148,8 @@ export default {
             statusList: [],
             query: {
                 pageIndex: 1,
-                pageSize: 7
+                pageSize: 7, 
+                enabled: false
             },
             queryParam: { pageSize: 7, name: '' },
             pageTotal: 0,

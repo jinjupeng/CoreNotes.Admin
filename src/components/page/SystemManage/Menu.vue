@@ -149,11 +149,11 @@
                         <el-option :key="0" :value="0" :label="'无需api'"></el-option>
                         <el-option
                             v-for="item in modules"
-                            :key="item.Id"
-                            :value="item.Id"
-                            :label="item.LinkUrl"
+                            :key="item.id"
+                            :value="item.id"
+                            :label="item.linkUrl"
                         >
-                            <span style="float: left">{{ item.LinkUrl }}</span>
+                            <span style="float: left">{{ item.linkUrl }}</span>
                             <span
                                 style="float: right; color: #8492a6; font-size: 13px"
                             >{{ item.name }}</span>
@@ -233,14 +233,14 @@
                         <el-option :key="0" :value="0" :label="'无需api'"></el-option>
                         <el-option
                             v-for="item in modules"
-                            :key="item.Id"
-                            :value="item.Id"
-                            :label="item.LinkUrl"
+                            :key="item.id"
+                            :value="item.id"
+                            :label="item.linkUrl"
                         >
-                            <span style="float: left">{{ item.LinkUrl }}</span>
+                            <span style="float: left">{{ item.linkUrl }}</span>
                             <span
                                 style="float: right; color: #8492a6; font-size: 13px"
-                            >{{ item.Name }}</span>
+                            >{{ item.name }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -256,6 +256,7 @@
 <script>
 import { getPermissionList, removePermission, editPermission, addPermission } from '../../../api/SystemManage/permission';
 import { getMenuTree, getMenuTreeList, deleteMenu } from '../../../api/SystemManage/menu';
+import { getModuleAll } from '../../../api/SystemManage/module';
 import util from '../../../utils/date';
 import { utilsMixin } from '../../../mixin/utils';
 import Treeselect from '@riophae/vue-treeselect';
@@ -368,6 +369,14 @@ export default {
                 })
                 .catch(() => {});
         },
+        // 获取接口列表
+        getModuleList() {
+            getModuleAll().then(res => {
+                if(res.success) {
+                    this.modules = res.response;
+                }
+            })
+        },
         // 获取菜单树
         getMenuTree() {
             getMenuTree().then(res => {
@@ -382,6 +391,7 @@ export default {
             this.editForm = Object.assign({}, row);
             this.statusList = this.getEnumType('MenuStatus');
             this.getMenuTree();
+            this.getModuleList();
             // console.log(this.options);
         },
         //显示新增界面
@@ -402,6 +412,7 @@ export default {
             };
             this.statusList = this.getEnumType('MenuStatus');
             this.getMenuTree();
+            this.getModuleList();
         },
         //编辑
         editSubmit() {
