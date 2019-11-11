@@ -81,6 +81,10 @@ export default {
                         {
                             index: 'menu',
                             title: '菜单管理'
+                        },
+                        {
+                            index: 'module',
+                            title: '接口管理'
                         }
                     ]
                 },

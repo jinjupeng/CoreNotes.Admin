@@ -40,6 +40,12 @@ export default new Router({
                     meta: {
                         title: '菜单管理'
                     }
+                },{
+                    path: '/module',
+                    component: () => import('../components/page/SystemManage/Module.vue'),
+                    meta: {
+                        title: '接口管理'
+                    }
                 },
                 {
                     path: '/dashboard',
