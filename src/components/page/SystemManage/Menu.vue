@@ -381,7 +381,11 @@ export default {
         getMenuTree() {
             getMenuTree().then(res => {
                 if (res.success) {
+                     const menu = [{ id: 0, label: '顶级类目', children: [] }]
                     this.options = res.response;
+                    this.options.push(menu)
+                    // menu[0].children.push(this.options)
+                    // this.options = menu
                 }
             });
         },
