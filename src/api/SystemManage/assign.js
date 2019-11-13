@@ -8,3 +8,11 @@ export function saveAssign(params) {
         params: params
       })
 };
+
+// 显示角色已分配的权限
+export function showPermission(param) {
+  return http({
+      url: '/RoleModulePermission/GetPermissionIdByRoleId?roleId=' + param,
+      method: 'get'
+    })
+};

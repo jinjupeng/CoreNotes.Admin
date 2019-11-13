@@ -25,7 +25,7 @@
                         <div slot="header" class="clearfix">
                             <span class="role-span">角色列表</span>
                         </div>
-                        <el-table :data="roles" border @current-change="handleCurrentChange">
+                        <el-table :data="roles" border @current-change="handleCurrentChange" v-loading="listLoading">
                             <el-table-column prop="roleName" label="角色名"></el-table-column>
                             <el-table-column prop="description" label="说明"></el-table-column>
                             <el-table-column prop="createTime" label="创建时间">
@@ -94,7 +94,7 @@
 <script>
 import { getMenuTree, getMenuTreeList } from '../../../api/SystemManage/menu';
 import { getRoleList } from '../../../api/SystemManage/role';
-import { saveAssign } from '../../../api/SystemManage/assign';
+import { saveAssign, showPermission } from '../../../api/SystemManage/assign';
 import util from '../../../utils/date';
 import { utilsMixin } from '../../../mixin/utils';
 
@@ -141,6 +141,7 @@ export default {
             getMenuTreeList().then(res => {
                 this.menus = res.response;
             });
+            this.menuIds = [];
         },
         // TODO：查询待完善
         handleSearch() {
@@ -158,49 +159,68 @@ export default {
         handleCurrentChange(val) {
             if (val) {
                 // 清空菜单的选中
-                this.$refs.menu.setCheckedKeys([]);
+                // this.$refs.menu.setCheckedKeys([]);
+
                 // 保存当前的角色id
                 this.currentRoleId = val.id;
+                this.showPermission(this.currentRoleId);
                 // 点击后显示按钮
                 this.showButton = true;
                 // 初始化
                 this.menuIds = [];
             }
         },
-        // 获取所选择的角色id
-        // 获取所分配的节点id，转成字符串
+        // 显示角色已分配的权限
+        showPermission(roleId) {
+            showPermission(roleId).then(res => {
+                if (res.success) {
+                    this.menuIds = res.response;
+                }
+            });
+        },
 
         // 保存角色分配的权限
         saveMenu() {
             this.nodekey = this.$refs.menu.getCheckedKeys();
             var param = { roleId: 0, array: '' };
             (param.roleId = this.currentRoleId), (param.array = this.nodekey.join(','));
-            if (this.nodekey.length > 0) {
-                this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                    this.addLoading = true;
-                    saveAssign(param).then(res => {
-                        if (util.isEmt.format(res)) {
-                            this.listLoading = false;
-                            return;
-                        }
-
-                        if (res.success) {
-                            this.listLoading = false;
-                            this.$message({
-                                message: res.msg,
-                                type: 'success'
-                            });
-                            this.listLoading = false;
-                            this.fetchData();
-                        } else {
-                            this.$message({
-                                message: res.msg,
-                                type: 'error'
-                            });
-                        }
-                    });
+            if (!this.nodekey.length > 0) {
+                this.$message({
+                    message: '所选节点为空',
+                    type: 'error'
                 });
+                return;
             }
+
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                this.addLoading = true;
+                this.menuLoading = true;
+                saveAssign(param).then(res => {
+                    if (util.isEmt.format(res)) {
+                        this.listLoading = false;
+                        this.menuLoading = false;
+                        return;
+                    }
+
+                    if (res.success) {
+                        this.listLoading = false;
+                        this.menuLoading = false;
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                        this.listLoading = false;
+                        this.menuLoading = false;
+                        this.fetchData();
+                        this.menuIds = [];
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: 'error'
+                        });
+                    }
+                });
+            });
         }
     }
 };
