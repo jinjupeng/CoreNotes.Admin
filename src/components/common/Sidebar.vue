@@ -9,7 +9,7 @@
             active-text-color="#20a0ff"
             unique-opened
             router
-        >
+        ><!-- 
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
@@ -45,8 +45,8 @@
                     </el-menu-item>
                 </template>
             </template>
-
-            <!-- 
+-->
+            
             <template v-for="item in items">
                 <template v-if="item.children">
                     <el-submenu :index="item.path" :key="item.path">
@@ -82,7 +82,7 @@
                     </el-menu-item>
                 </template>
             </template>
-            -->
+            
         </el-menu>
     </div>
 </template>
@@ -95,8 +95,8 @@ export default {
     data() {
         return {
             collapse: false,
-            // items: []
-
+            items: []
+/*
             items: [
                 {
                     icon: 'el-icon-lx-home',
@@ -223,7 +223,7 @@ export default {
                     index: '/donate',
                     title: '支持作者'
                 }
-            ]
+            ]*/
         };
     },
     computed: {
@@ -232,17 +232,29 @@ export default {
         }
     },
     created() {
-        /*
+        /**/
         http.get('/menu/getsidebarmenutree').then(res => {
             this.items = res.response;
+            this.getSelectedNode(this.items);
             console.log(this.items)
         });
-        */
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
         bus.$on('collapse', msg => {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
+    },
+    methods: {
+         // https://segmentfault.com/q/1010000016952582?sort=created
+        getSelectedNode(nodeData) {
+            nodeData.forEach(item => {
+                if ('children' in item && item.children.length === 0) {
+                    delete item.children;
+                } else if ('children' in item && item.children.length) {
+                    this.getSelectedNode(item.children);
+                }
+            });
+        }
     }
 };
 </script>
