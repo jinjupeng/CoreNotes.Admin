@@ -159,7 +159,7 @@ export default {
         handleCurrentChange(val) {
             if (val) {
                 // 清空菜单的选中
-                // this.$refs.menu.setCheckedKeys([]);
+                this.$refs.menu.setCheckedKeys([]);
 
                 // 保存当前的角色id
                 this.currentRoleId = val.id;
@@ -177,6 +177,7 @@ export default {
                     this.menuIds = res.response;
                 }
             });
+            console.log(this.menuIds.length)
         },
 
         // 保存角色分配的权限

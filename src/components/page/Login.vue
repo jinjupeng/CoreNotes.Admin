@@ -2,9 +2,9 @@
     <div class="login-wrap">
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
+                    <el-input v-model="loginForm.username" placeholder="username">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -12,14 +12,14 @@
                     <el-input
                         type="password"
                         placeholder="password"
-                        v-model="param.password"
+                        v-model="loginForm.password"
                         @keyup.enter.native="submitForm()"
                     >
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm()">登录</el-button>
+                    <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
                 </div>
                 <p class="login-tips">Tips : 用户名和密码随便填。</p>
             </el-form>
@@ -28,26 +28,41 @@
 </template>
 
 <script>
+import { login } from '../../api/SystemManage/login';
+
 export default {
     data: function() {
         return {
-            param: {
-                username: 'admin',
-                password: '123123',
+            loginForm: {
+                username: 'test',
+                password: 'test',
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
+            loading: false
         };
     },
     methods: {
-        submitForm() {
-            this.$refs.login.validate(valid => {
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
+                    this.loading = true;
+                    login(this.loginForm).then(res => {
+                        if (res.success){
+                            this.loading = false;
+                            this.$message.success(res.msg);
+                            localStorage.setItem('ms_username', this.loginForm.username);
+                            this.$router.push('/');
+                        }
+                        else{
+                            this.$message.error(res.msg);
+                        }
+                        
+                    }).catch(() => {
+                        this.loading = false
+                    })
                 } else {
                     this.$message.error('请输入账号和密码');
                     console.log('error submit!!');
