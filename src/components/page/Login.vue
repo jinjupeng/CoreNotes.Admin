@@ -54,6 +54,9 @@ export default {
                             this.loading = false;
                             this.$message.success(res.msg);
                             localStorage.setItem('ms_username', this.loginForm.username);
+                            // 保存token
+                            console.log(res)
+                            localStorage.setItem('token', 'Bearer ' + res.response.token)
                             this.$router.push('/');
                         }
                         else{

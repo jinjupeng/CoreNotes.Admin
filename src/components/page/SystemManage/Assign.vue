@@ -137,11 +137,14 @@ export default {
                 this.pageTotal = res.response.dataCount;
                 this.listLoading = false;
             });
+            this.getMenuTrees();
+            this.menuIds = [];
+        },
+        getMenuTrees() {
             // 获取菜单树
             getMenuTreeList().then(res => {
                 this.menus = res.response;
             });
-            this.menuIds = [];
         },
         // TODO：查询待完善
         handleSearch() {
@@ -164,6 +167,8 @@ export default {
                 // 保存当前的角色id
                 this.currentRoleId = val.id;
                 this.showPermission(this.currentRoleId);
+
+                this.getMenuTrees();
                 // 点击后显示按钮
                 this.showButton = true;
                 // 初始化
